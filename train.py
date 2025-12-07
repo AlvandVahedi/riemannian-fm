@@ -26,6 +26,7 @@ from manifm.model_pl import ManifoldFMLitModule
 torch.backends.cudnn.benchmark = True
 log = logging.getLogger(__name__)
 
+from scripts_model.efficiency_tools import MemorySpeedMonitor
 
 @hydra.main(version_base=None, config_path="configs", config_name="train")
 def main(cfg: DictConfig):
@@ -69,9 +70,12 @@ def main(cfg: DictConfig):
     # Construct model
     model = ManifoldFMLitModule(cfg)
     print(model)
+    
+    # eff_cb = MemorySpeedMonitor(out_dir="eff_logs", tag="train", log_every_n_steps=50)
 
     # Checkpointing, logging, and other misc.
     callbacks = [
+        # eff_cb,
         ModelCheckpoint(
             dirpath="checkpoints",
             monitor="val/loss_best",
